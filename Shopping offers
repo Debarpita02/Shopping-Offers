@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Solution {
+    public int shoppingOffers(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
+        return dfs(price, special, needs);
+    }
+
+    private int dfs(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
+        int cost = dotProduct(price, needs);
+
+        for (List<Integer> offer : special) {
+            List<Integer> remainingNeeds = new ArrayList<>(needs);
+            boolean isValidOffer = true;
+
+            for (int i = 0; i < needs.size(); i++) {
+                remainingNeeds.set(i, needs.get(i) - offer.get(i));
+                if (remainingNeeds.get(i) < 0) {
+                    isValidOffer = false;
+                    break;
+                }
+            }
+
+            if (isValidOffer) {
+                cost = Math.min(cost, offer.get(needs.size()) + dfs(price, special, remainingNeeds));
+            }
+        }
+
+        return cost;
+    }
+
+    private int dotProduct(List<Integer> a, List<Integer> b) {
+        int result = 0;
+        for (int i = 0; i < a.size(); i++) {
+            result += a.get(i) * b.get(i);
+        }
+        return result;
+    }
+}
